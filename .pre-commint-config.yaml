@@ -1,0 +1,16 @@
+repos:
+  - repo: git://github.com/pre-commit/pre-commit-hooks
+      rev: v2.1.0
+      hooks:
+        - id: check-merge-conflict
+        - id: trailing-whitespace
+        - id: check-yaml
+        - id: check-added-large-files
+        - id: forbid-new-submodules
+        - id: pretty-format-json --no-sort-keys
+  - repo: git://github.com/antonbabenko/pre-commit-terraform
+      rev: v1.8.1
+      hooks:
+        - id: terraform_fmt
+        - id: terraform_validate_with_variables
+        - id: terraform_docs

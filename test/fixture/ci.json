@@ -1,0 +1,8 @@
+{
+  "cluster_name": "ci.feedyard.io",
+
+  "cluster_aws_region": "us-east-1",
+  "cluster_vpc_id": "vpc-09e2f6d993cdbdc5a",
+  "cluster_create_security_group": "true",
+  "worker_create_security_group": "true"
+}
