@@ -8,10 +8,9 @@ orbs:
 workflows:
   version: 2.1
 
-  grainger-tf-aws-cluster-eks-module-ci:
+  tf-aws-platform-eks-module-ci:
     jobs:
       - build:
-          context: grainger-apps-global
           filters:
             branches:
               only: master
