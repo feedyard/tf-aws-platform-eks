@@ -1,8 +1,9 @@
 {
-  "cluster_name": "ci.feedyard.io",
-
-  "cluster_aws_region": "us-east-1",
-  "cluster_vpc_id": "vpc-09e2f6d993cdbdc5a",
-  "cluster_create_security_group": "true",
-  "worker_create_security_group": "true"
+  "cluster_name": "di-ci-cluster",
+  "cluster_version": "1.11",
+  "cluster_vpc_name" : "vpc-di-ci-cluster-eks",
+  "cluster_region" : "us-west-2",
+  "cluster_cidr_reservation_start" : "99",
+  "cluster_azs" : ["us-west-2a","us-west-2b","us-west-2c"],
+  "cluster_enable_nat_gateway" : "true"
 }

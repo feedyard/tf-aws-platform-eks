@@ -1,6 +1,5 @@
 resource "aws_autoscaling_group" "workers" {
-  #name_prefix           = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}"
-  name                  = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}-eks-asg"
+  name_prefix           = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}"
   desired_capacity      = "${lookup(var.worker_groups[count.index], "asg_desired_capacity", local.workers_group_defaults["asg_desired_capacity"])}"
   max_size              = "${lookup(var.worker_groups[count.index], "asg_max_size", local.workers_group_defaults["asg_max_size"])}"
   min_size              = "${lookup(var.worker_groups[count.index], "asg_min_size", local.workers_group_defaults["asg_min_size"])}"
@@ -13,7 +12,7 @@ resource "aws_autoscaling_group" "workers" {
 
   tags = ["${concat(
     list(
-      map("key", "Name", "value", "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}-eks-asg", "propagate_at_launch", true),
+      map("key", "Name", "value", "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}-eks_asg", "propagate_at_launch", true),
       map("key", "kubernetes.io/cluster/${aws_eks_cluster.mod.name}", "value", "owned", "propagate_at_launch", true),
       map("key", "k8s.io/cluster-autoscaler/${lookup(var.worker_groups[count.index], "autoscaling_enabled", local.workers_group_defaults["autoscaling_enabled"]) == 1 ? "enabled" : "disabled"  }", "value", "true", "propagate_at_launch", false)
     ),
@@ -26,8 +25,7 @@ resource "aws_autoscaling_group" "workers" {
 }
 
 resource "aws_launch_configuration" "workers" {
-  #name_prefix                 = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}"
-  name                        = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}-launch-config"
+  name_prefix                 = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}"
   associate_public_ip_address = "${lookup(var.worker_groups[count.index], "public_ip", local.workers_group_defaults["public_ip"])}"
   security_groups             = ["${local.worker_security_group_id}", "${var.worker_additional_security_group_ids}", "${compact(split(",",lookup(var.worker_groups[count.index],"additional_security_group_ids", local.workers_group_defaults["additional_security_group_ids"])))}"]
   iam_instance_profile        = "${element(aws_iam_instance_profile.workers.*.id, count.index)}"
@@ -54,12 +52,11 @@ resource "aws_launch_configuration" "workers" {
 }
 
 resource "aws_security_group" "workers" {
-  #name_prefix = "${aws_eks_cluster.mod.name}"
-  name        = "${aws_eks_cluster.mod.name}-eks-worker-sg"
+  name_prefix = "${aws_eks_cluster.mod.name}"
   description = "Security group for all nodes in the cluster."
   vpc_id      = "${var.cluster_vpc_id}"
   count       = "${var.worker_create_security_group ? 1 : 0}"
-  tags        = "${merge(var.tags, map("Name", "${aws_eks_cluster.mod.name}-eks-worker-sg", "kubernetes.io/cluster/${aws_eks_cluster.mod.name}", "owned"
+  tags        = "${merge(var.tags, map("Name", "${aws_eks_cluster.mod.name}-eks_worker_sg", "kubernetes.io/cluster/${aws_eks_cluster.mod.name}", "owned"
   ))}"
 }
 
@@ -108,8 +105,7 @@ resource "aws_security_group_rule" "workers_ingress_cluster_https" {
 }
 
 resource "aws_iam_role" "workers" {
-  #name_prefix           = "${aws_eks_cluster.mod.name}"
-  name                  = "${aws_eks_cluster.mod.name}-worker-iam-role"
+  name_prefix           = "${aws_eks_cluster.mod.name}"
   assume_role_policy    = "${data.aws_iam_policy_document.workers_assume_role_policy.json}"
   force_detach_policies = true
 }
@@ -198,8 +194,7 @@ data "aws_iam_policy_document" "worker_autoscaling" {
 }
 
 resource "aws_autoscaling_group" "workers_launch_template" {
-  #name_prefix       = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}"
-  name              = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}-eks-asg"
+  name_prefix       = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}"
   desired_capacity  = "${lookup(var.worker_groups_launch_template[count.index], "asg_desired_capacity", local.workers_group_launch_template_defaults["asg_desired_capacity"])}"
   max_size          = "${lookup(var.worker_groups_launch_template[count.index], "asg_max_size", local.workers_group_launch_template_defaults["asg_max_size"])}"
   min_size          = "${lookup(var.worker_groups_launch_template[count.index], "asg_min_size", local.workers_group_launch_template_defaults["asg_min_size"])}"
@@ -238,7 +233,7 @@ resource "aws_autoscaling_group" "workers_launch_template" {
 
   tags = ["${concat(
     list(
-      map("key", "Name", "value", "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}-eks-asg", "propagate_at_launch", true),
+      map("key", "Name", "value", "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}-eks_asg", "propagate_at_launch", true),
       map("key", "kubernetes.io/cluster/${aws_eks_cluster.mod.name}", "value", "owned", "propagate_at_launch", true),
       map("key", "k8s.io/cluster-autoscaler/${lookup(var.worker_groups_launch_template[count.index], "autoscaling_enabled", local.workers_group_launch_template_defaults["autoscaling_enabled"]) == 1 ? "enabled" : "disabled"  }", "value", "true", "propagate_at_launch", false)
     ),
@@ -251,8 +246,7 @@ resource "aws_autoscaling_group" "workers_launch_template" {
 }
 
 resource "aws_launch_template" "workers_launch_template" {
-  #name_prefix = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}"
-  name = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}-launch-template"
+  name_prefix = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups_launch_template[count.index], "name", count.index)}"
 
   network_interfaces {
     associate_public_ip_address = "${lookup(var.worker_groups_launch_template[count.index], "public_ip", local.workers_group_launch_template_defaults["public_ip"])}"

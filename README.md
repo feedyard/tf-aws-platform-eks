@@ -1,6 +1,6 @@
-# feedyard/tf-aws-platform-eks
+# grainger-di-tf-aws-cluster-eks
 
-Terraform module to create eks cluster in platform-vpc space.
+setup kubectl: aws eks update-kubeconfig --name di-ci-cluster
 
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -47,24 +47,15 @@ Terraform module to create eks cluster in platform-vpc space.
 
 | Name | Description |
 |------|-------------|
-| cluster\_arn | The Amazon Resource Name (ARN) of the cluster |
-| cluster\_certificate\_authority | Nested attribute containing certificate-authority-data for the cluster |
 | cluster\_certificate\_authority\_data | Nested attribute containing certificate-authority-data for your cluster. This is the base64 encoded certificate data required to communicate with your cluster. |
-| cluster\_endpoint | endpoint for your Kubernetes API server |
 | cluster\_endpoint | The endpoint for your EKS Kubernetes API. |
-| cluster\_id | cluster id |
 | cluster\_id | The name/id of the EKS cluster. |
-| cluster\_platform\_version | platform version for the cluster |
 | cluster\_security\_group\_id | Security group ID attached to the EKS cluster. |
-| cluster\_security\_group\_id | Security group ID attached to the EKS cluster. |
-| cluster\_version | Kubernetes server version for the cluster |
 | cluster\_version | The Kubernetes server version for the EKS cluster. |
-| cluster\_vpc\_config | Additional nested attributes |
 | config\_map\_aws\_auth | A kubernetes configuration to authenticate to this EKS cluster. |
 | kubeconfig | kubectl config file contents for this EKS cluster. |
 | worker\_iam\_role\_arn | default IAM role ARN for EKS worker groups |
 | worker\_iam\_role\_name | default IAM role name for EKS worker groups |
-| worker\_security\_group\_id | Security group ID attached to the EKS workers. |
 | worker\_security\_group\_id | Security group ID attached to the EKS workers. |
 | workers\_asg\_arns | IDs of the autoscaling groups containing workers. |
 | workers\_asg\_names | Names of the autoscaling groups containing workers. |

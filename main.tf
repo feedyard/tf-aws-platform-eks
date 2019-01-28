@@ -20,11 +20,10 @@ resource "aws_eks_cluster" "mod" {
 }
 
 resource "aws_security_group" "cluster" {
-  #name_prefix = "${var.cluster_name}"
-  name        = "${var.cluster_name}-eks-cluster-sg"
+  name_prefix = "${var.cluster_name}"
   description = "EKS cluster security group."
   vpc_id      = "${var.cluster_vpc_id}"
-  tags        = "${merge(var.tags, map("Name", "${var.cluster_name}-eks-cluster-sg"))}"
+  tags        = "${merge(var.tags, map("Name", "${var.cluster_name}-eks_cluster_sg"))}"
   count       = "${var.cluster_create_security_group ? 1 : 0}"
 }
 
@@ -51,8 +50,7 @@ resource "aws_security_group_rule" "cluster_https_worker_ingress" {
 }
 
 resource "aws_iam_role" "cluster" {
-  #name_prefix           = "${var.cluster_name}"
-  name                  = "${var.cluster_name}-cluster-iam-role"
+  name_prefix           = "${var.cluster_name}"
   assume_role_policy    = "${data.aws_iam_policy_document.cluster_assume_role_policy.json}"
   force_detach_policies = true
 }
