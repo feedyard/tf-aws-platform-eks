@@ -1,9 +1,8 @@
 {
-  "cluster_name": "di-ci-cluster",
+  "cluster_name": "k8s.ci",
   "cluster_version": "1.11",
-  "cluster_vpc_name" : "vpc-di-ci-cluster-eks",
-  "cluster_region" : "us-west-2",
-  "cluster_cidr_reservation_start" : "99",
-  "cluster_azs" : ["us-west-2a","us-west-2b","us-west-2c"],
+  "cluster_vpc_name" : "vpc-ci-cluster-eks",
+  "cluster_region" : "us-east-1",
+  "cluster_azs" : ["us-east-1b","us-east-1c","us-east-1d", "us-east-1e"],
   "cluster_enable_nat_gateway" : "true"
 }
