@@ -16,6 +16,12 @@ module "vpc" {
   }
 }
 
+data "aws_vpc" "cluster_vpc" {
+  tags = {
+    Cluster = "${var.cluster_name}"
+  }
+}
+
 module "eks" {
   source = "../.."
 
@@ -26,5 +32,5 @@ module "eks" {
     "pipeline" = "feedyard/tf-aws-cluster-eks"
   }
 
-  wait = "${module.vpc.cluster_name}"
+  wait = "${data.aws_vpc.cluster_vpc.id}"
 }
