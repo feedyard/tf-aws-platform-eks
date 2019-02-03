@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "github.com/feedyard/tf-aws-platform-vpc?ref=2.0.1"
+  source = "github.com/feedyard/tf-aws-platform-vpc?ref=2.0.2"
 
   name                   = "${var.cluster_vpc_name}"
   cluster_name           = "${var.cluster_name}"
@@ -19,12 +19,11 @@ module "vpc" {
 module "eks" {
   source = "../.."
 
-  cluster_name = "${var.cluster_name}"
+  #cluster_name = "${var.cluster_name}"
+  cluster_name = "${module.vpc.cluster_name}"
 
   tags {
     "test"     = "terraform module continuous integration testing"
     "pipeline" = "feedyard/tf-aws-cluster-eks"
   }
-
-  depends_on = ["module.vpc"]
 }
