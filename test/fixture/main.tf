@@ -19,8 +19,7 @@ module "vpc" {
 module "eks" {
   source = "../.."
 
-  #cluster_name = "${var.cluster_name}"
-  cluster_name = "${module.vpc.cluster_name}"
+  cluster_name = "${var.cluster_name}"
 
   tags {
     "test"     = "terraform module continuous integration testing"
