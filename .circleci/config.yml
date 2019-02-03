@@ -20,6 +20,7 @@ workflows:
 jobs:
 
   build:
+    context: global
     environment:
       BASH_ENV: local.env
     docker:
