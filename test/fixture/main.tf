@@ -25,4 +25,6 @@ module "eks" {
     "test"     = "terraform module continuous integration testing"
     "pipeline" = "feedyard/tf-aws-cluster-eks"
   }
+
+  depends_on = ["module.vpc"]
 }
