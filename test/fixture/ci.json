@@ -1,8 +1,9 @@
 {
   "cluster_name": "k8s.ci",
   "cluster_version": "1.11",
-  "cluster_vpc_name" : "vpc-ci-cluster-eks",
   "cluster_region" : "us-east-1",
-  "cluster_azs" : ["us-east-1b","us-east-1c","us-east-1d", "us-east-1e"],
+  "cluster_vpc_name" : "vpc-ci-tf-aws-platform-eks",
+  "cluster_cidr_reservation_start": "99",
+  "cluster_azs" : ["us-east-1b","us-east-1c","us-east-1d"],
   "cluster_enable_nat_gateway" : "true"
 }

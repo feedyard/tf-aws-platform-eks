@@ -3,7 +3,7 @@ terraform {
 }
 
 provider "aws" {
-  version = "~> 1.56"
+  version = "~> 1.57"
   region  = "${var.cluster_region}"
 }
 
@@ -24,7 +24,7 @@ provider "template" {
 }
 
 module "vpc" {
-  source = "github.com/feedyard/tf-aws-platform-vpc?ref=1.0.0"
+  source = "github.com/feedyard/tf-aws-platform-vpc?ref=2.0.1"
 
   name                   = "${var.cluster_vpc_name}"
   cluster_name           = "${var.cluster_name}"
@@ -37,20 +37,33 @@ module "vpc" {
 
   tags {
     "test"     = "terraform module continuous integration testing"
-    "pipeline" = "grainger-di-tf-aws-cluster-eks"
+    "pipeline" = "feedyard/tf-aws-cluster-eks"
+  }
+}
+
+data "aws_vpc" "ci_vpc" {
+  tags = {
+    Cluster = "${var.cluster_name}"
+  }
+}
+
+data "aws_subnet_ids" "cluster_internal" {
+  vpc_id = "${data.aws_vpc.ci_vpc.id}"
+
+  tags = {
+    Tier = "Internal"
   }
 }
 
 module "eks" {
   source = "../.."
 
-  #source = "github.com/terraform-aws-modules/terraform-aws-eks"
-
   cluster_name       = "${var.cluster_name}"
-  cluster_subnet_ids = ["${module.vpc.nat_subnet_ids}"]
-  cluster_vpc_id     = "${module.vpc.vpc_id}"
+  cluster_subnet_ids = ["${data.aws_subnet_ids.cluster_internal.ids}"]
+  cluster_vpc_id     = "${data.aws_vpc.ci_vpc.id}"
+
   tags {
     "test"     = "terraform module continuous integration testing"
-    "pipeline" = "grainger-di-tf-aws-cluster-eks"
+    "pipeline" = "feedyard/tf-aws-cluster-eks"
   }
 }

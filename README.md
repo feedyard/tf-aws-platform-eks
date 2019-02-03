@@ -1,4 +1,4 @@
-# grainger-di-tf-aws-cluster-eks
+# feedyard/tf-aws-platform-eks
 
 setup kubectl: aws eks update-kubeconfig --name di-ci-cluster
 
@@ -13,9 +13,7 @@ setup kubectl: aws eks update-kubeconfig --name di-ci-cluster
 | cluster\_delete\_timeout | Timeout value when deleting the EKS cluster. | string | `15m` | no |
 | cluster\_name | Name of the EKS cluster. Also used as a prefix in names of related resources. | string | - | yes |
 | cluster\_security\_group\_id | If provided, the EKS cluster will be attached to this security group. If not given, a security group will be created with necessary ingres/egress to work with the workers and provide API access to your current IP/32. | string | `` | no |
-| cluster\_subnet\_ids | A list of subnets to place the EKS cluster and workers within. | list | - | yes |
 | cluster\_version | Kubernetes version to use for the EKS cluster. | string | `1.11` | no |
-| cluster\_vpc\_id | VPC where the cluster and workers will be deployed. | string | - | yes |
 | config\_output\_path | Where to save the Kubectl config file (if `write_kubeconfig = true`). Should end in a forward slash `/` . | string | `./` | no |
 | kubeconfig\_aws\_authenticator\_additional\_args | Any additional arguments to pass to the authenticator such as the role to assume. e.g. ["-r", "MyEksRole"]. | list | `[]` | no |
 | kubeconfig\_aws\_authenticator\_command | Command to use to fetch AWS EKS credentials. | string | `aws-iam-authenticator` | no |

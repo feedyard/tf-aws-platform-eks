@@ -5,7 +5,7 @@ resource "aws_eks_cluster" "mod" {
 
   vpc_config {
     security_group_ids = ["${local.cluster_security_group_id}"]
-    subnet_ids         = ["${var.cluster_subnet_ids}"]
+    subnet_ids         = ["${data.aws_subnet_ids.cluster_internal_subnet.ids}"]
   }
 
   timeouts {
@@ -19,16 +19,30 @@ resource "aws_eks_cluster" "mod" {
   ]
 }
 
-resource "aws_security_group" "cluster" {
-  name_prefix = "${var.cluster_name}"
-  description = "EKS cluster security group."
-  vpc_id      = "${var.cluster_vpc_id}"
-  tags        = "${merge(var.tags, map("Name", "${var.cluster_name}-eks_cluster_sg"))}"
-  count       = "${var.cluster_create_security_group ? 1 : 0}"
+data "aws_vpc" "cluster_vpc" {
+  tags = {
+    Cluster = "${var.cluster_name}"
+  }
 }
 
+data "aws_subnet_ids" "cluster_internal_subnet" {
+  vpc_id = "${data.aws_vpc.cluster_vpc.id}"
+
+  tags = {
+    Tier = "Internal"
+  }
+}
+
+# EKS cluster security group
+resource "aws_security_group" "cluster" {
+  name   = "${var.cluster_name}-eks-cluster-sg"
+  vpc_id = "${data.aws_vpc.cluster_vpc.id}"
+  tags   = "${merge(var.tags, map("Name", "${var.cluster_name}-eks-cluster-sg"))}"
+  count  = "${var.cluster_create_security_group ? 1 : 0}"
+}
+
+# Allow cluster egress access to the Internet
 resource "aws_security_group_rule" "cluster_egress_internet" {
-  description       = "Allow cluster egress access to the Internet."
   protocol          = "-1"
   security_group_id = "${aws_security_group.cluster.id}"
   cidr_blocks       = ["0.0.0.0/0"]
@@ -38,8 +52,8 @@ resource "aws_security_group_rule" "cluster_egress_internet" {
   count             = "${var.cluster_create_security_group ? 1 : 0}"
 }
 
+# Allow pods to communicate with the EKS cluster API
 resource "aws_security_group_rule" "cluster_https_worker_ingress" {
-  description              = "Allow pods to communicate with the EKS cluster API."
   protocol                 = "tcp"
   security_group_id        = "${aws_security_group.cluster.id}"
   source_security_group_id = "${local.worker_security_group_id}"

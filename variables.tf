@@ -8,14 +8,6 @@ variable "cluster_version" {
   default = "1.11"
 }
 
-# VPC where the cluster and workers will be deployed.
-variable "cluster_vpc_id" {}
-
-# A list of subnets to place the EKS cluster and workers within.
-variable "cluster_subnet_ids" {
-  type = "list"
-}
-
 # Whether to write and apply the aws-auth configmap file.
 variable "manage_aws_auth" {
   default = true
