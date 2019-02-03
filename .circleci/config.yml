@@ -2,61 +2,25 @@
 version: 2.1
 
 orbs:
-  common-tasks: feedyard/common-pipeline-tasks@0.1.6
   terraform: feedyard/terraform@dev:latest
 
 workflows:
-  version: 2.1
+  version: 2
 
-  tf-aws-platform-eks-module-ci:
+  tf-aws-platform-vpc-module-ci-pipeline:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: master
-            tags:
-              ignore: /.*/
-
-jobs:
-
-  build:
-    context: global
-    environment:
-      BASH_ENV: local.env
-    docker:
-      - image: quay.io/feedyard/circleci-platform-agent
-    steps:
-      - checkout
-      - setup_remote_docker
-      - common-tasks/decrypt-env
-      - run:
-          name: confirm Docker health
-          command: docker info
-      - run:
-          name: terraform files syntax and style check
-          command: invoke validate
-      # Normally a test-kitchen run using kitchen-terraform followed by the inspec test would follow
-      # for some months now, on the alpine agent images, ruby is unable to locate installed gems at runtime
-      # though they do appear in 'gem list'
-      - common-tasks/setup-aws-credentials:
+      - terraform/lint
+      - terraform/module-ci:
+          context: global
+          working-directory: test/fixture
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
-      - run:
-          name: provision instance of module to sandbox account
-          working_directory: test/fixture
-          command: |
-            terraform init
-            terraform apply -var-file=ci.json -auto-approve
-      - run:
-          name: use awspec to validate aws configuration
-          working_directory: test/fixture
-          environment:
-            PLATFORM_ENV: ci
-          command: inspec exec ../integration/default/tf_aws_cluster_eks.rb
-      - run:
-          name: destroy aws resources
-          working_directory: test/fixture
-          command: terraform destroy -var-file=ci.json -auto-approve
-          when: always
-
+          after-terraform:
+            - run:
+                name: use inspec to validate aws configuration
+                working_directory: test/fixture
+                environment:
+                  PLATFORM_ENV: ci
+                  AWS_REGION: us-east-1
+                command: inspec ../integration/default
