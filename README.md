@@ -29,6 +29,7 @@ setup kubectl: aws eks update-kubeconfig --name di-ci-cluster
 | map\_users | Additional IAM users to add to the aws-auth configmap. See examples/eks_test_fixture/variables.tf for example format. | list | `[]` | no |
 | map\_users\_count | The count of roles in the map_users list. | string | `0` | no |
 | tags | A map of tags to add to all resources. | map | `{}` | no |
+| wait | test of dependency between modules | string | `false` | no |
 | worker\_additional\_security\_group\_ids | A list of additional security group ids to attach to worker instances | list | `[]` | no |
 | worker\_create\_security\_group | Whether to create a security group for the workers or attach the workers to `worker_security_group_id`. | string | `true` | no |
 | worker\_group\_count | The number of maps contained within the worker_groups list. | string | `1` | no |

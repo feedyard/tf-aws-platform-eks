@@ -26,4 +26,11 @@ module "eks" {
     "test"     = "terraform module continuous integration testing"
     "pipeline" = "feedyard/tf-aws-cluster-eks"
   }
+
+  wait = "${null_resource.dependency.wait}"
+}
+
+resource "null_resource" "dependency" {
+  wait       = "true"
+  depends_on = ["module.vpc"]
 }
