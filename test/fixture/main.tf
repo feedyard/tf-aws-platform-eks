@@ -26,10 +26,5 @@ module "eks" {
     "pipeline" = "feedyard/tf-aws-cluster-eks"
   }
 
-  wait = "${null_resource.dependency.wait}"
-}
-
-resource "null_resource" "dependency" {
-  wait       = "true"
-  depends_on = ["module.vpc"]
+  wait = "${module.vpc.cluster_name}"
 }
