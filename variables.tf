@@ -186,11 +186,6 @@ variable "worker_create_security_group" {
   default     = true
 }
 
-# test of dependency between modules
-variable "wait" {
-  default = "false"
-}
-
 locals {
   asg_tags = ["${null_resource.tags_as_list_of_maps.*.triggers}"]
 

@@ -16,6 +16,13 @@ workflows:
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
+          before-terraform:
+            - run:
+                name: setup vpc
+                working_directory: test/fixture
+                command: |
+                  terraform init
+                  terraform apply -var-file=ci.json -auto-approve
           after-terraform:
             - run:
                 name: use inspec to validate aws configuration
@@ -24,3 +31,10 @@ workflows:
                   PLATFORM_ENV: ci
                   AWS_REGION: us-east-1
                 command: inspec ../integration/default
+            - run:
+                name: teardown vpc
+                working_directory: test/fixture
+                command: |
+                  terraform destroy -var-file=ci.json -auto-approve
+                when: always
+
