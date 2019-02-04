@@ -38,4 +38,3 @@ workflows:
                 command: |
                   terraform destroy -var-file=ci.json -auto-approve
                 when: always
-
