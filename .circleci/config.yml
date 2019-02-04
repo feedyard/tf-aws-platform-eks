@@ -7,7 +7,7 @@ orbs:
 workflows:
   version: 2
 
-  tf-aws-platform-vpc-module-ci-pipeline:
+  tf-aws-platform-eks-module-ci-pipeline:
     jobs:
       - terraform/lint:
           context: global
@@ -32,10 +32,10 @@ workflows:
                   PLATFORM_ENV: ci
                   AWS_REGION: us-east-1
                 command: inspec ../integration/default
-#            - run:
-#                name: teardown vpc
-#                working_directory: test/fixture/setup
-#                command: |
-#                  terraform destroy -var-file=ci.json -auto-approve
-#                when: always
+            - run:
+                name: teardown vpc
+                working_directory: test/fixture/setup
+                command: |
+                  terraform destroy -var-file=ci.json -auto-approve
+                when: always
 
