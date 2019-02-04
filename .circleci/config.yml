@@ -9,7 +9,8 @@ workflows:
 
   tf-aws-platform-vpc-module-ci-pipeline:
     jobs:
-      - terraform/lint
+      - terraform/lint:
+          context: global
       - terraform/module-ci:
           context: global
           working-directory: test/fixture
