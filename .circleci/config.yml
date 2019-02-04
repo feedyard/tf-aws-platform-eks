@@ -24,14 +24,15 @@ workflows:
                 command: |
                   terraform init
                   terraform apply -var-file=ci.json -auto-approve
-          after-terraform:
+          integration-tests:
             - run:
                 name: use inspec to validate aws configuration
                 working_directory: test/fixture
                 environment:
                   PLATFORM_ENV: ci
                   AWS_REGION: us-east-1
-                command: inspec ../integration/default
+                command: inspec exec ../integration/default
+          after-terraform:
             - run:
                 name: teardown vpc
                 working_directory: test/fixture/setup
