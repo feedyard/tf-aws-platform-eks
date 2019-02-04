@@ -24,17 +24,17 @@ workflows:
                 working-directory: test/fixture/setup
                 command: |
                   terraform init
-                  terraform apply -var-file=ci.json -auto-approve
+                  terraform apply -var-file=<< parameters.env >>.json -auto-approve
           integration-tests:
             - run:
                 name: awspec tests of fixture
                 working-directory: test/fixture
                 environment:
-                  PLATFORM_ENV: ci
+                  PLATFORM_ENV: << parameters.env >>
                 command: inspec exec ../integration/default
           after-terraform:
             - run:
                 name: fixture setup teardown
                 working-directory: test/fixture/setup
-                command: terraform destroy -var-file=ci.json -auto-approve
+                command: terraform destroy -var-file=<< parameters.env >>.json -auto-approve
 
