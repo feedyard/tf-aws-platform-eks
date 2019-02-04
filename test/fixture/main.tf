@@ -1,8 +1,7 @@
 module "eks" {
   source = "../.."
 
-  cluster_name   = "${var.cluster_name}"
-  cluster_region = "${var.cluster_region}"
+  cluster_name = "${var.cluster_name}"
 
   tags {
     "test"     = "terraform module continuous integration testing"
