@@ -11,32 +11,34 @@ workflows:
     jobs:
       - terraform/lint:
           context: global
-      - terraform/module-ci:
+      - terraform/apply:
+          context: global
+          working-directory: test/fixture/setup
+          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+          aws-region: us-east-1
+      - terraform/apply:
           context: global
           working-directory: test/fixture
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
-          before-terraform:
-            - run:
-                name: setup vpc
-                working_directory: test/fixture/setup
-                command: |
-                  terraform init
-                  terraform apply -var-file=ci.json -auto-approve
-          integration-tests:
-            - run:
-                name: use inspec to validate aws configuration
-                working_directory: test/fixture
-                environment:
-                  PLATFORM_ENV: ci
-                  AWS_REGION: us-east-1
-                command: inspec exec ../integration/default
           after-terraform:
             - run:
-                name: teardown vpc
-                working_directory: test/fixture/setup
-                command: |
-                  terraform destroy -var-file=ci.json -auto-approve
-                when: always
-
+                name: awspec tests of fixture
+                working-directory: test/fixture
+                environment:
+                  PLATFORM_ENV: ci
+                command: inspec exec ../integration/default
+      - terraform/destroy:
+          context: global
+          working-directory: test/fixture/setup
+          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+          aws-region: us-east-1
+      - terraform/destroy:
+          context: global
+          working-directory: test/fixture
+          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+          aws-region: us-east-1
