@@ -23,8 +23,11 @@ workflows:
                 name: fixture setup
                 working-directory: test/fixture/setup
                 command: |
+                  pwd
                   terraform init
+                  echo 'init complete'
                   terraform plan -var-file=ci.json
+                  echo 'plan complete'
                   terraform apply -var-file=ci.json -auto-approve
           integration-tests:
             - run:
