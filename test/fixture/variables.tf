@@ -23,5 +23,4 @@ provider "template" {
   version = "~> 2.0"
 }
 
-variable "cluster_region" {}
 variable "cluster_name" {}
