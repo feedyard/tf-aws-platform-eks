@@ -12,17 +12,23 @@ workflows:
       - terraform/lint:
           context: global
       - terraform/apply:
+          name: apply-fixture-setup
           context: global
           working-directory: test/fixture/setup
+          env: ci
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
       - terraform/apply:
+          name: apply-ci-plan
           context: global
           working-directory: test/fixture
+          env: ci
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
+          requires:
+            - apply-fixture-setup
           after-terraform:
             - run:
                 name: awspec tests of fixture
@@ -31,14 +37,22 @@ workflows:
                   PLATFORM_ENV: ci
                 command: inspec exec ../integration/default
       - terraform/destroy:
+          name: destroy-ci-plam
           context: global
           working-directory: test/fixture/setup
+          env: ci
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
+          requires:
+            - apply-ci-plam
       - terraform/destroy:
+          name: destroy-fixture-setup
           context: global
           working-directory: test/fixture
+          env: ci
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
+          requires:
+            destroy-ci-plan
