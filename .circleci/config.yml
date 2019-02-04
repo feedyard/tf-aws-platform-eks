@@ -24,6 +24,7 @@ workflows:
                 working-directory: test/fixture/setup
                 command: |
                   terraform init
+                  terraform plan -var-file=ci.json
                   terraform apply -var-file=ci.json -auto-approve
           integration-tests:
             - run:
