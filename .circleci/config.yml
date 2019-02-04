@@ -37,3 +37,4 @@ workflows:
                 name: fixture setup teardown
                 working-directory: test/fixture/setup
                 command: terraform destroy -var-file=ci.json -auto-approve
+
