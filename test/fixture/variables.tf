@@ -4,7 +4,6 @@ terraform {
 
 provider "aws" {
   version = "~> 1.57"
-  region  = "${var.cluster_region}"
 }
 
 provider "random" {
