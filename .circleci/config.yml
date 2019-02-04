@@ -11,48 +11,29 @@ workflows:
     jobs:
       - terraform/lint:
           context: global
-      - terraform/apply:
-          name: apply-fixture-setup
-          context: global
-          working-directory: test/fixture/setup
-          env: ci
-          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
-          aws-region: us-east-1
-      - terraform/apply:
-          name: apply-ci-plan
+      - terraform/module-ci:
           context: global
           working-directory: test/fixture
           env: ci
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
-          requires:
-            - apply-fixture-setup
-          after-terraform:
+          before-terraform:
+            - run:
+                name: fixture setup
+                working-directory: test/fixture/setup
+                command: |
+                  terraform init
+                  terraform apply -var-file=ci.json -auto-approve
+          integration-tests:
             - run:
                 name: awspec tests of fixture
                 working-directory: test/fixture
                 environment:
                   PLATFORM_ENV: ci
                 command: inspec exec ../integration/default
-      - terraform/destroy:
-          name: destroy-ci-plan
-          context: global
-          working-directory: test/fixture
-          env: ci
-          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
-          aws-region: us-east-1
-          requires:
-            - apply-ci-plam
-      - terraform/destroy:
-          name: destroy-fixture-setup
-          context: global
-          working-directory: test/fixture/setup
-          env: ci
-          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
-          aws-region: us-east-1
-          requires:
-            destroy-ci-plan
+          after-terraform:
+            - run:
+                name: fixture setup teardown
+                working-directory: test/fixture/setup
+                command: terraform destroy -var-file=ci.json -auto-approve
