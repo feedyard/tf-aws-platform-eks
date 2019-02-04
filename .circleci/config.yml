@@ -30,7 +30,7 @@ workflows:
                 name: awspec tests of fixture
                 working-directory: test/fixture
                 environment:
-                  PLATFORM_ENV: << parameters.env >>
+                  PLATFORM_ENV: ci
                 command: inspec exec ../integration/default
           after-terraform:
             - run:
