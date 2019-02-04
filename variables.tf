@@ -8,6 +8,9 @@ variable "cluster_version" {
   default = "1.11"
 }
 
+# region to search for cluster_vpc
+variable "cluster_region" {}
+
 # Whether to write and apply the aws-auth configmap file.
 variable "manage_aws_auth" {
   default = true

@@ -1,3 +1,4 @@
 {
-  "cluster_name": "k8s.ci"
+  "cluster_name": "ci-cluster,",
+  "cluster_region": "us-east-1"
 }

@@ -1,5 +1,5 @@
 {
-  "cluster_name": "k8s.ci",
+  "cluster_name": "ci-cluster",
   "vpc_region" : "us-east-1",
   "vpc_name" : "vpc-ci-tf-aws-platform-eks",
   "vpc_cidr_reservation_start": "99",

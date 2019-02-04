@@ -12,6 +12,7 @@ setup kubectl: aws eks update-kubeconfig --name di-ci-cluster
 | cluster\_create\_timeout | Timeout value when creating the EKS cluster. | string | `15m` | no |
 | cluster\_delete\_timeout | Timeout value when deleting the EKS cluster. | string | `15m` | no |
 | cluster\_name | Name of the EKS cluster. Also used as a prefix in names of related resources. | string | - | yes |
+| cluster\_region | region to search for cluster_vpc | string | - | yes |
 | cluster\_security\_group\_id | If provided, the EKS cluster will be attached to this security group. If not given, a security group will be created with necessary ingres/egress to work with the workers and provide API access to your current IP/32. | string | `` | no |
 | cluster\_version | Kubernetes version to use for the EKS cluster. | string | `1.11` | no |
 | config\_output\_path | Where to save the Kubectl config file (if `write_kubeconfig = true`). Should end in a forward slash `/` . | string | `./` | no |
