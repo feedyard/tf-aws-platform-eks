@@ -22,7 +22,7 @@ workflows:
           working-directory: test/fixture/setup
           env: ci
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+          aws-secret-access-key: $FEEDYARD_SANDBOX_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
       - approve-destroy-module-dependencies:
           type: approval
@@ -38,7 +38,7 @@ workflows:
           working-directory: test/fixture/setup
           env: ci
           aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+          aws-secret-access-key: $FEEDYARD_SANDBOX_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
           requires:
             - approve-destroy-module-dependencies
@@ -52,7 +52,7 @@ workflows:
 #          working-directory: test/fixture
 #          env: ci
 #          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-#          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+#          aws-secret-access-key: $FEEDYARD_SANDBOX_CI_AWS_SECRET_ACCESS_KEY
 #          aws-region: us-east-1
 #          requires:
 #            - module-dependency-apply
@@ -76,7 +76,7 @@ workflows:
 #          working-directory: test/fixture
 #          env: ci
 #          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-#          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+#          aws-secret-access-key: $FEEDYARD_SANDBOX_CI_AWS_SECRET_ACCESS_KEY
 #          aws-region: us-east-1
 #          requires:
 #            - approve-destroy-module-fixture
