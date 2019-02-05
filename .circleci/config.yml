@@ -80,5 +80,3 @@ workflows:
           aws-region: us-east-1
           requires:
             - approve-destroy-module-fixture
-
-
