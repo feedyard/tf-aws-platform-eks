@@ -25,7 +25,7 @@ workflows:
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
       - approve-destroy-module-dependencies:
-          type: approve
+          type: approval
           requires:
             - module-dependency-apply
       - terraform/destroy:
@@ -64,7 +64,7 @@ workflows:
                   PLATFORM_ENV: ci
                 command: inspec exec ../integration/default
       - approve-destroy-module-fixture:
-          type: approve
+          type: approval
           requires:
             - module-fixture-apply
       - terraform/destroy:
