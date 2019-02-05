@@ -43,40 +43,40 @@ workflows:
           requires:
             - approve-destroy-module-dependencies
       # module ci
-      - terraform/apply:
-          name: module-fixture-apply
-          context: global
-          account: sandbox
-          prefix: feedyard
-          bucket-region: us-east-1
-          working-directory: test/fixture
-          env: ci
-          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
-          aws-region: us-east-1
-          requires:
-            - module-dependency-apply
-          integration-tests:
-            - run:
-                name: awspec tests of fixture
-                working_directory: test/fixture
-                environment:
-                  PLATFORM_ENV: ci
-                command: inspec exec ../integration/default
-      - approve-destroy-module-fixture:
-          type: approval
-          requires:
-            - module-fixture-apply
-      - terraform/destroy:
-          name: module-fixture-destroy
-          context: global
-          account: sandbox
-          prefix: feedyard
-          bucket-region: us-east-1
-          working-directory: test/fixture
-          env: ci
-          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
-          aws-region: us-east-1
-          requires:
-            - approve-destroy-module-fixture
+#      - terraform/apply:
+#          name: module-fixture-apply
+#          context: global
+#          account: sandbox
+#          prefix: feedyard
+#          bucket-region: us-east-1
+#          working-directory: test/fixture
+#          env: ci
+#          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
+#          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+#          aws-region: us-east-1
+#          requires:
+#            - module-dependency-apply
+#          integration-tests:
+#            - run:
+#                name: awspec tests of fixture
+#                working_directory: test/fixture
+#                environment:
+#                  PLATFORM_ENV: ci
+#                command: inspec exec ../integration/default
+#      - approve-destroy-module-fixture:
+#          type: approval
+#          requires:
+#            - module-fixture-apply
+#      - terraform/destroy:
+#          name: module-fixture-destroy
+#          context: global
+#          account: sandbox
+#          prefix: feedyard
+#          bucket-region: us-east-1
+#          working-directory: test/fixture
+#          env: ci
+#          aws-access-key-id: $FEEDYARD_SANDBOX_CI_AWS_ACCESS_KEY_ID
+#          aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
+#          aws-region: us-east-1
+#          requires:
+#            - approve-destroy-module-fixture
