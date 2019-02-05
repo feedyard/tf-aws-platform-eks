@@ -79,6 +79,6 @@ workflows:
           aws-secret-access-key: $FEEDYARD_SANDBOC_CI_AWS_SECRET_ACCESS_KEY
           aws-region: us-east-1
           requires:
-            - approve-approve-destroy-module-fixture
+            - approve-destroy-module-fixture
 
 
