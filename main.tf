@@ -29,7 +29,7 @@ data "aws_subnet_ids" "cluster_internal_subnet" {
   vpc_id = "${data.aws_vpc.cluster_vpc.id}"
 
   tags = {
-    Tier = "internal"
+    Tier = "nat"
   }
 }
 
