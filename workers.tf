@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "workers" {
-  name                  = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}-eks-asg"
+  name_prefix           = "${aws_eks_cluster.mod.name}-"
   desired_capacity      = "${lookup(var.worker_groups[count.index], "asg_desired_capacity", local.workers_group_defaults["asg_desired_capacity"])}"
   max_size              = "${lookup(var.worker_groups[count.index], "asg_max_size", local.workers_group_defaults["asg_max_size"])}"
   min_size              = "${lookup(var.worker_groups[count.index], "asg_min_size", local.workers_group_defaults["asg_min_size"])}"
@@ -25,7 +25,7 @@ resource "aws_autoscaling_group" "workers" {
 }
 
 resource "aws_launch_configuration" "workers" {
-  name                        = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}"
+  name_prefix                 = "${aws_eks_cluster.mod.name}-"
   associate_public_ip_address = "${lookup(var.worker_groups[count.index], "public_ip", local.workers_group_defaults["public_ip"])}"
   security_groups             = ["${local.worker_security_group_id}", "${var.worker_additional_security_group_ids}", "${compact(split(",",lookup(var.worker_groups[count.index],"additional_security_group_ids", local.workers_group_defaults["additional_security_group_ids"])))}"]
   iam_instance_profile        = "${element(aws_iam_instance_profile.workers.*.id, count.index)}"
@@ -139,6 +139,43 @@ resource "null_resource" "tags_as_list_of_maps" {
     value               = "${element(values(var.tags), count.index)}"
     propagate_at_launch = "true"
   }
+}
+
+resource "aws_iam_role_policy_attachment" "workers_dns" {
+  policy_arn = "${aws_iam_policy.worker_dns.arn}"
+  role       = "${aws_iam_role.workers.name}"
+}
+
+resource "aws_iam_policy" "worker_dns" {
+  name = "eks-worker-dns-${aws_eks_cluster.mod.name}"
+
+  policy = <<EOF
+{
+"Version": "2012-10-17",
+"Statement": [
+  {
+    "Effect": "Allow",
+    "Action": [
+      "route53:ChangeResourceRecordSets"
+    ],
+    "Resource": [
+      "arn:aws:route53:::hostedzone/*"
+    ]
+  },
+  {
+    "Effect": "Allow",
+    "Action": [
+      "route53:ListHostedZones",
+      "route53:ListResourceRecordSets"
+    ],
+    "Resource": [
+      "*"
+    ]
+  }
+]
+}
+
+EOF
 }
 
 resource "aws_iam_role_policy_attachment" "workers_autoscaling" {
