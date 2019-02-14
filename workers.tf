@@ -1,5 +1,5 @@
 resource "aws_autoscaling_group" "workers" {
-  name_prefix           = "${aws_eks_cluster.mod.name}-"
+  name_prefix           = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}"
   desired_capacity      = "${lookup(var.worker_groups[count.index], "asg_desired_capacity", local.workers_group_defaults["asg_desired_capacity"])}"
   max_size              = "${lookup(var.worker_groups[count.index], "asg_max_size", local.workers_group_defaults["asg_max_size"])}"
   min_size              = "${lookup(var.worker_groups[count.index], "asg_min_size", local.workers_group_defaults["asg_min_size"])}"
@@ -12,6 +12,7 @@ resource "aws_autoscaling_group" "workers" {
 
   tags = ["${concat(
     list(
+      map("key", "Cluster", "value", "${aws_eks_cluster.mod.name}"),
       map("key", "Name", "value", "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}-eks-asg", "propagate_at_launch", true),
       map("key", "kubernetes.io/cluster/${aws_eks_cluster.mod.name}", "value", "owned", "propagate_at_launch", true),
       map("key", "k8s.io/cluster-autoscaler/${lookup(var.worker_groups[count.index], "autoscaling_enabled", local.workers_group_defaults["autoscaling_enabled"]) == 1 ? "enabled" : "disabled"  }", "value", "true", "propagate_at_launch", false)
@@ -25,7 +26,7 @@ resource "aws_autoscaling_group" "workers" {
 }
 
 resource "aws_launch_configuration" "workers" {
-  name_prefix                 = "${aws_eks_cluster.mod.name}-"
+  name_prefix                 = "${aws_eks_cluster.mod.name}-${lookup(var.worker_groups[count.index], "name", count.index)}"
   associate_public_ip_address = "${lookup(var.worker_groups[count.index], "public_ip", local.workers_group_defaults["public_ip"])}"
   security_groups             = ["${local.worker_security_group_id}", "${var.worker_additional_security_group_ids}", "${compact(split(",",lookup(var.worker_groups[count.index],"additional_security_group_ids", local.workers_group_defaults["additional_security_group_ids"])))}"]
   iam_instance_profile        = "${element(aws_iam_instance_profile.workers.*.id, count.index)}"
@@ -105,15 +106,15 @@ resource "aws_security_group_rule" "workers_ingress_cluster_https" {
 }
 
 resource "aws_iam_role" "workers" {
-  name                  = "${aws_eks_cluster.mod.name}-worker-iam-role"
+  name                  = "${aws_eks_cluster.mod.name}"
   assume_role_policy    = "${data.aws_iam_policy_document.workers_assume_role_policy.json}"
   force_detach_policies = true
 }
 
 resource "aws_iam_instance_profile" "workers" {
-  name  = "${aws_eks_cluster.mod.name}-instance-profile"
-  role  = "${lookup(var.worker_groups[count.index], "iam_role_id",  lookup(local.workers_group_defaults, "iam_role_id"))}"
-  count = "${var.worker_group_count}"
+  name_prefix = "${aws_eks_cluster.mod.name}"
+  role        = "${lookup(var.worker_groups[count.index], "iam_role_id",  lookup(local.workers_group_defaults, "iam_role_id"))}"
+  count       = "${var.worker_group_count}"
 }
 
 resource "aws_iam_role_policy_attachment" "workers_AmazonEKSWorkerNodePolicy" {
@@ -184,7 +185,7 @@ resource "aws_iam_role_policy_attachment" "workers_autoscaling" {
 }
 
 resource "aws_iam_policy" "worker_autoscaling" {
-  name        = "eks-worker-autoscaling-${aws_eks_cluster.mod.name}"
+  name_prefix = "eks-worker-autoscaling-${aws_eks_cluster.mod.name}"
   description = "EKS worker node autoscaling policy for cluster ${aws_eks_cluster.mod.name}"
   policy      = "${data.aws_iam_policy_document.worker_autoscaling.json}"
 }
